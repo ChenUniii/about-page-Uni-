@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Sweet & Rock Portfolio</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* --- 全域變數設定 --- */
+        :root {
+            --kitty-pink: #FFC0CB;
+            --hot-pink: #FF69B4;
+            --rock-black: #222222;
+            --white: #FFFFFF;
+            --border-style: 3px solid var(--rock-black); /* 搖滾風格的粗黑框 */
+        }
+
+        /* --- 基礎設定 & 平滑捲動 --- */
+        html {
+            scroll-behavior: smooth; /* 錨點平滑捲動 */
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #FFF0F5; /* 淺粉色背景 */
+            color: var(--rock-black);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Fredoka', sans-serif; /* 可愛標題字體 */
+            margin-bottom: 1rem;
+        }
+
+        /* --- 導覽列 --- */
+        nav {
+            background-color: var(--rock-black);
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            text-align: center;
+            border-bottom: 4px solid var(--hot-pink);
+        }
+
+        nav a {
+            color: var(--kitty-pink);
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        nav a:hover {
+            color: var(--white);
+            text-shadow: 0 0 5px var(--hot-pink); /* 搖滾霓虹感 */
+        }
+
+        /* --- 通用容器 --- */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        section {
+            margin-bottom: 4rem;
+            padding-top: 60px; /* 預留給 sticky nav 的空間 */
+            margin-top: -60px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--rock-black);
+            margin-bottom: 2rem;
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* 標題裝飾：蝴蝶結意象的粉色底線 */
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 100%;
+            height: 10px;
+            background-color: var(--hot-pink);
+            position: absolute;
+            bottom: 5px;
+            z-index: -1;
+            transform: skew(-10deg); /* 傾斜一點帶出速度感/搖滾感 */
+        }
+
+        /* --- 1. 個人資訊區塊 --- */
+        #profile {
+            text-align: center;
+            background: var(--white);
+            border: var(--border-style);
+            padding: 3rem 1rem;
+            border-radius: 15px;
+            box-shadow: 8px 8px 0px var(--hot-pink); /* 漫畫風陰影 */
+        }
+
+        .profile-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--rock-black);
+            margin-bottom: 1rem;
+        }
+
+        .contact-info a {
+            display: inline-block;
+            margin: 10px;
+            color: var(--rock-black);
+            font-size: 1.5rem;
+            transition: transform 0.2s;
+        }
+
+        .contact-info a:hover {
+            transform: scale(1.2) rotate(-5deg); /* 互動動畫：搖晃 */
+            color: var(--hot-pink);
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--rock-black);
+            color: var(--white);
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background-color: var(--hot-pink);
+            transform: translateY(-3px);
+        }
+
+        /* --- 2. 技能展示區 (進度條) --- */
+        .skill-item {
+            margin-bottom: 1.5rem;
+        }
+
+        .skill-name {
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: var(--white);
+            border: 2px solid var(--rock-black);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--hot-pink);
+            /* 條紋效果增加一點龐克感 */
+            background-image: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.3) 10px,
+                rgba(255,255,255,0.3) 20px
+            );
+            width: 0%; /* 預設 0，可用 JS 控制或直接寫死 width */
+            transition: width 1s ease-in-out;
+        }
+
+        /* --- 3. 工作/經歷時間軸 --- */
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* 中間的線 */
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 20px; /* 手機版靠左 */
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--rock-black);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            padding-left: 60px; /* 留給線和點的空間 */
+        }
+
+        /* 時間軸的點 (蝴蝶結概念) */
+        .timeline-dot {
+            position: absolute;
+            left: 8px; /* 調整至線的中央 */
+            top: 5px;
+            width: 28px;
+            height: 28px;
+            background-color: var(--hot-pink);
+            border: 3px solid var(--rock-black);
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .timeline-content {
+            background: var(--white);
+            border: var(--border-style);
+            padding: 1.5rem;
+            border-radius: 10px;
+            position: relative;
+            /* 讓卡片有點傾斜的搖滾感，但在手機上不要太誇張 */
+        }
+        
+        .timeline-date {
+            font-weight: bold;
+            color: var(--hot-pink);
+            font-family: 'Fredoka', sans-serif;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        /* --- 4. 專案作品集 (卡片式) --- */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .project-card {
+            background: var(--white);
+            border: var(--border-style);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        /* Hover 動畫：卡片浮起 + 陰影變深 */
+        .project-card:hover {
+            transform: translateY(-10px) rotate(1deg);
+            box-shadow: 10px 10px 0px var(--rock-black);
+        }
+
+        .project-img {
+            width: 100%;
+            height: 200px;
+            background-color: #eee;
+            object-fit: cover;
+            border-bottom: var(--border-style);
+        }
+
+        .project-info {
+            padding: 1.5rem;
+        }
+
+        .project-role {
+            display: inline-block;
+            background: var(--kitty-pink);
+            color: var(--rock-black);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border: 1px solid var(--rock-black);
+        }
+
+        /* --- Footer --- */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background-color: var(--rock-black);
+            color: var(--kitty-pink);
+            margin-top: 4rem;
+        }
+
+        /* --- 手機版調整 (< 600px) --- */
+        @media (max-width: 600px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            nav a {
+                display: inline-block;
+                margin: 5px;
+                font-size: 0.9rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .timeline::before {
+                left: 15px;
+            }
+            
+            .timeline-dot {
+                left: 3px;
+            }
+            
+            .timeline-item {
+                padding-left: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="#profile">Profile</a>
+        <a href="#skills">Skills</a>
+        <a href="#experience">History</a>
+        <a href="#projects">Projects</a>
+    </nav>
+
+    <div class="container">
+        
+        <section id="profile">
+            <img src="assets/螢幕擷取畫面 2025-12-09 100856.png" alt="個人頭像" class="profile-img">
+            <h1>Hello, I'm <span style="color:var(--hot-pink)">陳又菱</span></h1>
+            <p>醫資系大一 | 熱愛吉他、音樂跟可愛的東西 | INFP</p>
+            
+            <div class="contact-info">
+                <a href="chenuni0309@gmail.com" title="Email"><i class="fas fa-envelope"></i></a>
+                <a href="https://github.com/ChenUniii" title="GitHub"><i class="fab fa-github"></i></a>
+                <a href="https://www.instagram.com/yl._.u0/" title="Instagram"><i class="fab fa-instagram"></i></a>
+            </div>
+        </section>
+
+        <section id="skills">
+            <h2 class="section-title">MY SKILLS</h2>
+            
+            <div class="skill-item">
+                <div class="skill-name"><span>Guitar!!!</span> <span>85%</span></div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 85%;"></div>
+                </div>
+            </div>
+
+            <div class="skill-item">
+                <div class="skill-name"><span>Singing!!!</span> <span>90%</span></div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 90%;"></div>
+                </div>
+            </div>
+
+            <div class="skill-item">
+                <div class="skill-name"><span>Java</span> <span>10%</span></div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 10%;"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="experience">
+            <h2 class="section-title">TIMELINE</h2>
+            <div class="timeline">
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-date">2023-2025</span>
+                        <h3>景美女中熱音社 總務兼唱教</h3>
+                        <p>管理紀錄社團收支出分配預算，教學妹唱歌</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-date">2025-Present</span>
+                        <h3>教會兒童主日學吉他班老師</h3>
+                        <p>教可愛的國小生們彈吉他(真的很卡哇伊)</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-date">2023-Present</span>
+                        <h3>永和禮拜堂福音隊</h3>
+                        <p>與泰國清萊福泰基金會一同籌備兒童營會給當地小孩青少年參與</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="projects">
+            <h2 class="section-title">PROJECTS</h2>
+            <div class="projects-grid">
+                
+                <div class="project-card">
+                    <img src="assets/螢幕擷取畫面 2025-12-09 100856.png" alt="Project 1" class="project-img">
+                    <div class="project-info">
+                        <span class="project-role">個人簡歷</span>
+                        <h3>學習歷程自述</h3>
+                        <p>個人申請輔仁大學醫學訊系的備審資料</p>
+                        <a href="assets/輔仁大學醫療資訊與創新應用學士學位學程.pdf" target="_blank" class="btn" style="font-size:0.8rem;">View Code</a>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <img src="assets/螢幕擷取畫面 2025-12-09 103100.png" alt="Project 2" class="project-img">
+                    <div class="project-info">
+                        <span class="project-role">專題研究</span>
+                        <h3>景美女中實驗班專題課程</h3>
+                        <p>自然實驗班高一時會去台灣科技大學做專題研究，所參與的主題是3D建模的學習</p>
+                        <a href="assets/Solidworks 3D繪圖.pdf"target="_blank" class="btn" style="font-size:0.8rem;">Read More</a>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <img src="assets/螢幕擷取畫面 2025-12-09 103409.png" alt="Project 3" class="project-img">
+                    <div class="project-info">
+                        <span class="project-role">社團活動</span>
+                        <h3>景美女中熱音社29屆</h3>
+                        <p>擔任總務兼唱教，積極參與社團活動</p>
+                        <a href="assets/社團活動經驗.pdf" target="_blank" class="btn" style="font-size:0.8rem;">See Design</a>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <img src="assets/螢幕擷取畫面 2025-12-09 103546.png" alt="Project 2" class="project-img">
+                    <div class="project-info">
+                        <span class="project-role">教會服事</span>
+                        <h3>作為一個基督徒...</h3>
+                        <p>在教會的敬拜團擔任吉他手與主唱，並參與多項兒童營會的籌備</p>
+                        <a href="assets/服務學習-教會服事.pdf.pdf"target="_blank" class="btn" style="font-size:0.8rem;">Read More</a>
+                    </div>
+                </div>
+
+
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Kitty Rocker Portfolio. Made with <i class="fas fa-heart" style="color:var(--hot-pink)"></i> & Rock n Roll.</p>
+    </footer>
+
+</body>
+</html>
